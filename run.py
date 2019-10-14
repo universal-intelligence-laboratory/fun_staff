@@ -10,9 +10,9 @@ device = 'cpu'
 # if torch.cuda.is_available():
 #     device = 'cuda'
 print(device)
-x1 = torch.rand(16,16,16).to(device)
-x2 = torch.rand(16,16,16).to(device)
-x3 = torch.rand(16,16,16).to(device)
+x1 = torch.sigmoid(torch.rand(16,16,16).to(device))
+x2 = torch.sigmoid(torch.rand(16,16,16).to(device)/2 + torch.ones(16,16,16).to(device))
+x3 = torch.sigmoid(torch.rand(16,16,16).to(device)/3+ torch.ones(16,16,16).to(device)+ torch.ones(16,16,16).to(device))
 model = World(x1,x2,x3,device=device).to(device)
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 model.train()
@@ -28,3 +28,4 @@ for epoch in tqdm(range(1, 500 + 1)):
 
     for i, sp in enumerate(model.spices):
         writer.add_histogram(str(i)+"_score", torch.Tensor(sp.score).clone().cpu().data.numpy(), epoch)
+        writer.add_histogram(str(i)+"_leader", torch.Tensor(sp.leader).clone().cpu().data.numpy(), epoch)
